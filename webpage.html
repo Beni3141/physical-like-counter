@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Like Counter</title>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-analytics.js"></script>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
         .counter { font-size: 2em; margin: 20px 0; }
@@ -25,10 +25,12 @@
             storageBucket: "physical-like-buttons.appspot.com",
             messagingSenderId: "805437798223",
             appId: "1:805437798223:web:05bcd2b3603c58b4df773a"
+            measurementId: "G-837ZZNGWSR"
         };
 
         // Initialize Firebase
         const app = firebase.initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
         const db = firebase.database();
         console.log("Firebase initialized");
 
