@@ -14,6 +14,7 @@
 <body>
     <h1>You've liked this!</h1>
     <div class="counter" id="counter">0</div>
+    <button onclick="incrementCounter()">Like</button>
     <script>
         // Your Firebase configuration
         const firebaseConfig = {
@@ -29,17 +30,24 @@
         // Initialize Firebase
         const app = firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+        console.log("Firebase initialized");
 
         // Reference to the likes counter in the database
         const counterRef = db.ref('likes/counters/counter1');
+        console.log("Database reference set:", counterRef.toString());
 
-        // Increment the counter when the page is loaded
-        counterRef.transaction(currentValue => {
-            return (currentValue || 0) + 1;
-        });
+        // Increment the counter when the button is clicked
+        function incrementCounter() {
+            console.log("Increment counter called");
+            counterRef.transaction(currentValue => {
+                console.log("Current counter value:", currentValue);
+                return (currentValue || 0) + 1;
+            });
+        }
 
         // Listen for changes to the counter
         counterRef.on('value', (snapshot) => {
+            console.log("Counter value changed:", snapshot.val());
             document.getElementById('counter').textContent = snapshot.val();
         });
 
@@ -48,11 +56,6 @@
             if (error) {
                 console.error('Error fetching counter value:', error);
             }
-        });
-
-        counterRef.transaction((currentValue) => {
-            console.log('Current counter value:', currentValue);
-            return (currentValue || 0) + 1;
         });
     </script>
 </body>
