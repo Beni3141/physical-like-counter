@@ -24,8 +24,8 @@
             storageBucket: "physical-like-buttons.appspot.com",
             messagingSenderId: "805437798223",
             appId: "1:805437798223:web:05bcd2b3603c58b4df773a"
-            measurementId: "G-837ZZNGWSR"
         };
+
         // Initialize Firebase
         const app = firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
@@ -41,6 +41,18 @@
         // Listen for changes to the counter
         counterRef.on('value', (snapshot) => {
             document.getElementById('counter').textContent = snapshot.val();
+        });
+
+        // Log any errors during the Firebase connection
+        counterRef.on('value', (snapshot, error) => {
+            if (error) {
+                console.error('Error fetching counter value:', error);
+            }
+        });
+
+        counterRef.transaction((currentValue) => {
+            console.log('Current counter value:', currentValue);
+            return (currentValue || 0) + 1;
         });
     </script>
 </body>
