@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Like Counter</title>
-    <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-analytics.js"></script>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
         .counter { font-size: 2em; margin: 20px 0; }
@@ -15,8 +13,14 @@
     <h1>You've liked this!</h1>
     <div class="counter" id="counter">0</div>
     <button onclick="incrementCounter()">Like</button>
-    <script>
-        // Your Firebase configuration
+
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+        import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
+
+        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyD9a6LuG3P6BfxSvA9GOviGsrQyo1KDvck",
             authDomain: "physical-like-buttons.firebaseapp.com",
@@ -24,40 +28,33 @@
             projectId: "physical-like-buttons",
             storageBucket: "physical-like-buttons.appspot.com",
             messagingSenderId: "805437798223",
-            appId: "1:805437798223:web:05bcd2b3603c58b4df773a"
+            appId: "1:805437798223:web:05bcd2b3603c58b4df773a",
             measurementId: "G-837ZZNGWSR"
         };
 
         // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const db = firebase.database();
-        console.log("Firebase initialized");
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
 
         // Reference to the likes counter in the database
-        const counterRef = db.ref('likes/counters/counter1');
+        const counterRef = ref(database, 'likes/counters/counter1');
         console.log("Database reference set:", counterRef.toString());
 
         // Increment the counter when the button is clicked
-        function incrementCounter() {
+        window.incrementCounter = function() {
             console.log("Increment counter called");
-            counterRef.transaction(currentValue => {
+            runTransaction(counterRef, (currentValue) => {
                 console.log("Current counter value:", currentValue);
                 return (currentValue || 0) + 1;
             });
-        }
+        };
 
         // Listen for changes to the counter
-        counterRef.on('value', (snapshot) => {
+        onValue(counterRef, (snapshot) => {
             console.log("Counter value changed:", snapshot.val());
             document.getElementById('counter').textContent = snapshot.val();
-        });
-
-        // Log any errors during the Firebase connection
-        counterRef.on('value', (snapshot, error) => {
-            if (error) {
-                console.error('Error fetching counter value:', error);
-            }
+        }, {
+            onlyOnce: false
         });
     </script>
 </body>
