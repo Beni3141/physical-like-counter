@@ -35,8 +35,20 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
+        // Function to get URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            const results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // Get counter ID from URL parameter
+        const counterId = getUrlParameter('counterId') || 'counter1';
+        console.log("Counter ID from URL:", counterId);
+
         // Reference to the likes counter in the database
-        const counterRef = ref(database, 'likes/counters/counter1');
+        const counterRef = ref(database, `likes/counters/${counterId}`);
         console.log("Database reference set:", counterRef.toString());
 
         // Increment the counter when the page is loaded
