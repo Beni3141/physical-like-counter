@@ -7,6 +7,27 @@
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
         .counter { font-size: 2em; margin: 20px 0; }
+        .bar-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .bar {
+            width: 100%;
+            background-color: #f3f3f3;
+            margin: 5px 0;
+            text-align: left;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .bar div {
+            height: 30px;
+            background-color: #4caf50;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -71,7 +92,45 @@
         // Increment the counter when the page loads
         document.addEventListener('DOMContentLoaded', (event) => {
             incrementCounter();
+            displayRanking();
         });
+
+
+        // Function to display the ranking
+        function displayRanking() {
+            const countersRef = ref(database, 'likes/counters');
+            get(countersRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const rankingContainer = document.getElementById('ranking');
+                    rankingContainer.innerHTML = ''; // Clear previous content
+
+                    // Convert data to an array and sort by value
+                    const sortedCounters = Object.entries(data).sort((a, b) => b[1] - a[1]);
+
+                    // Find the maximum value for scaling
+                    const maxValue = sortedCounters.length > 0 ? sortedCounters[0][1] : 1;
+
+                    // Create bars for each counter
+                    sortedCounters.forEach(([id, value]) => {
+                        const barWrapper = document.createElement('div');
+                        barWrapper.classList.add('bar');
+
+                        const bar = document.createElement('div');
+                        bar.style.width = `${(value / maxValue) * 100}%`;
+                        bar.textContent = `${id}: ${value}`;
+
+                        barWrapper.appendChild(bar);
+                        rankingContainer.appendChild(barWrapper);
+                    });
+                } else {
+                    console.log("No data available");
+                }
+            }).catch((error) => {
+                console.error(error);
+            });
+        }
+        
     </script>
 </body>
 </html>
