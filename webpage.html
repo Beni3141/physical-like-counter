@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Like Counter</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        .counter { font-size: 2em; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>You've liked this!</h1>
+    <div class="counter" id="counter">0</div>
+    <script>
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Reference to the likes counter in the database
+        const counterRef = db.ref('likes/counter');
+
+        // Increment the counter when the page is loaded
+        counterRef.transaction(currentValue => {
+            return (currentValue || 0) + 1;
+        });
+
+        // Listen for changes to the counter
+        counterRef.on('value', (snapshot) => {
+            document.getElementById('counter').textContent = snapshot.val();
+        });
+    </script>
+</body>
+</html>
