@@ -31,7 +31,7 @@
         const db = firebase.database();
 
         // Reference to the likes counter in the database
-        const counterRef = db.ref('likes/counter');
+        const counterRef = db.ref('likes/counters/counter1');
 
         // Increment the counter when the page is loaded
         counterRef.transaction(currentValue => {
