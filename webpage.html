@@ -37,17 +37,17 @@
         const database = getDatabase(app);
 
         // Reference to the likes counter in the database
-        const counterRef = ref(database, 'likes/counter1');
+        const counterRef = ref(database, 'likes/counters/counter1');
         console.log("Database reference set:", counterRef.toString());
 
-        // Increment the counter when the button is clicked
-        window.incrementCounter = function() {
+        // Increment the counter when the page is loaded
+        function incrementCounter() {
             console.log("Increment counter called");
             runTransaction(counterRef, (currentValue) => {
                 console.log("Current counter value:", currentValue);
                 return (currentValue || 0) + 1;
             });
-        };
+        }
 
         // Listen for changes to the counter
         onValue(counterRef, (snapshot) => {
@@ -55,6 +55,11 @@
             document.getElementById('counter').textContent = snapshot.val();
         }, {
             onlyOnce: false
+        });
+
+        // Increment the counter when the page loads
+        document.addEventListener('DOMContentLoaded', (event) => {
+            incrementCounter();
         });
     </script>
 </body>
